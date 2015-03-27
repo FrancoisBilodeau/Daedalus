@@ -14,7 +14,7 @@
 /*.booproj
 
 # Ignored folders
-/mazes
+mazes/
 
 #Unity3D Generated File On Crash Reports
 sysinfo.txt
