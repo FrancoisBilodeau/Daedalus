@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/*
+ * Credits: Unity wiki http://wiki.unity3d.com/index.php?title=PauseMenu
+*/
+
 public class PauseMenu : MonoBehaviour
 {
 	

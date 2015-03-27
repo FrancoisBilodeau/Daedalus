@@ -1,46 +1,53 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
+﻿public class PlayModeSingleton
+{
 
-public class PlayModeSingleton {
+    const int WallHeight = 3; // Hauteur des murs du labyrinthe
+    const float TileSize = 2.0f; // Tailles d'une tuile du labyrinthe
 
-	public float tileSize = 2.0f;
-	public int wallHeight = 3;
+    static PlayModeSingleton instance;
+    SaveFile saveFile;
+    bool started;
 
-	private static PlayModeSingleton instance;
-	private SaveFile saveFile;
-	private bool started;
+    PlayModeSingleton()
+    {
+        started = new bool();
+        started = false;
+    }
 
-	private PlayModeSingleton(){
-		started = new bool();
-		started = false;
-	}
-
-	public static PlayModeSingleton Instance
-	{
-		get 
-		{
-			if (instance == null)
-			{
-				instance = new PlayModeSingleton();
-			}
-			return instance;
-		}
-	}
+    public static PlayModeSingleton Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new PlayModeSingleton();
+            }
+            return instance;
+        }
+    }
 	
-	public SaveFile getSaveFile(){
-		return saveFile;
-	}
+    public SaveFile getSaveFile()
+    {
+        return saveFile;
+    }
 
-	public void setSaveFile(SaveFile saveFile){
-		this.saveFile = saveFile;
-	}
+    public void setSaveFile(SaveFile newSaveFile)
+    {
+        saveFile = newSaveFile;
+    }
 
-	public bool isStarted(){
-		return started;
-	}
+    public bool hasStarted()
+    {
+        return started;
+    }
 
-	public void setStarted( bool isStarted){
-		started = isStarted;
-	}
+    public void setStarted(bool isStarted)
+    {
+        started = isStarted;
+    }
+
+    public float getTileSize()
+    {
+        return TileSize;
+    }
 }

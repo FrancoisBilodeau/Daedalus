@@ -1,64 +1,89 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Verification {
+public class Verification
+{
 
-	public enum VerificationResult {Ok, StartInvalide, EndInvalide, Incomplete};
+    public enum VerificationResult
+    {
+        Ok,
+        InvalidStart,
+        InvalidEnd,
+        Incomplete
+    }
 
-	private Maze maze;
+    Maze maze;
 
-	public Verification(Maze maze){
-		this.maze = maze;
-	}
+    public Verification(Maze maze)
+    {
+        this.maze = maze;
+    }
 	
-	public VerificationResult verification(Maze maze){
-		bool[,] mazeData = (bool[,])maze.mapData.Clone();
+    public VerificationResult verification(Maze mazeToCheck)
+    {
+        bool[,] mazeData = (bool[,])mazeToCheck.mapData.Clone();
 
-		if(maze.start.x < 0 || maze.start.y < 0){
-			return VerificationResult.StartInvalide;
-		}else if(mazeData[(int)maze.start.x, (int)maze.start.y] == true){
-			return VerificationResult.StartInvalide;
-		}
+        if (mazeToCheck.start.x < 0 || mazeToCheck.start.y < 0)
+        {
+            return VerificationResult.InvalidStart;
+        }
+        if (mazeData [(int)mazeToCheck.start.x, (int)mazeToCheck.start.y])
+        {
+            return VerificationResult.InvalidStart;
+        }
 
-		if(maze.end.x < 0 || maze.end.y < 0){
-			return VerificationResult.EndInvalide;
-		}else if(mazeData[(int)maze.end.x, (int)maze.end.y] == true){
-			return VerificationResult.EndInvalide;
-		}
-		if(travel (mazeData, maze.start)){
-			return VerificationResult.Ok;
-		}else{
-			return VerificationResult.Incomplete;
-		}
-	}
+        if (mazeToCheck.end.x < 0 || mazeToCheck.end.y < 0)
+        {
+            return VerificationResult.InvalidEnd;
+        }
+        if (mazeData [(int)mazeToCheck.end.x, (int)mazeToCheck.end.y])
+        {
+            return VerificationResult.InvalidEnd;
+        }
+        if (travel(mazeData, mazeToCheck.start))
+        {
+            return VerificationResult.Ok;
+        }
+        return VerificationResult.Incomplete;
+    }
 
-  // fonction récursive appelée pour chaque case.
-	private bool travel(bool[,] mazeData, Vector2 coor){
-		if(coor.Equals(maze.end)){
-			return true;
-		}
+    // Fonction récursive appelée pour chaque case
+    bool travel(bool[,] mazeData, Vector2 coor)
+    {
+        if (coor.Equals(maze.end))
+        {
+            return true;
+        }
 
-		mazeData[(int)coor.x, (int)coor.y] = true;
-		if( coor.x > 0 && mazeData[(int)coor.x -1, (int)coor.y] == false){
-			if(travel(mazeData, new Vector2 ((int)coor.x -1, (int)coor.y))){
-				return true;
-			}
-		}
-		if(coor.x < maze.sizeX - 1 && mazeData[(int)coor.x + 1, (int)coor.y] == false){
-			if(travel(mazeData, new Vector2 ((int)coor.x +1, (int)coor.y))){
-				return true;
-			}
-		}
-		if(coor.y > 0 && mazeData[(int)coor.x, (int)coor.y - 1] == false){
-			if(travel(mazeData, new Vector2 ((int)coor.x, (int)coor.y - 1))){
-				return true;
-			}
-		}
-		if(coor.y < maze.sizeZ - 1 && mazeData[(int)coor.x, (int)coor.y + 1] == false){
-			if(travel(mazeData, new Vector2 ((int)coor.x, (int)coor.y + 1))){
-				return true;
-			}
-		}
-		return false;		
-	}
+        mazeData [(int)coor.x, (int)coor.y] = true;
+        if (coor.x > 0 && !mazeData [(int)coor.x - 1, (int)coor.y])
+        {
+            if (travel(mazeData, new Vector2((int)coor.x - 1, (int)coor.y)))
+            {
+                return true;
+            }
+        }
+        if (coor.x < maze.sizeX - 1 && !mazeData [(int)coor.x + 1, (int)coor.y])
+        {
+            if (travel(mazeData, new Vector2((int)coor.x + 1, (int)coor.y)))
+            {
+                return true;
+            }
+        }
+        if (coor.y > 0 && !mazeData [(int)coor.x, (int)coor.y - 1])
+        {
+            if (travel(mazeData, new Vector2((int)coor.x, (int)coor.y - 1)))
+            {
+                return true;
+            }
+        }
+        if (coor.y < maze.sizeZ - 1 && !mazeData [(int)coor.x, (int)coor.y + 1])
+        {
+            if (travel(mazeData, new Vector2((int)coor.x, (int)coor.y + 1)))
+            {
+                return true;
+            }
+        }
+        return false;		
+    }
 }

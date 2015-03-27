@@ -2,20 +2,24 @@
 using System.Collections;
 using System;
 
-public class TimeRecorded{
-	private string playerName;
-	private TimeSpan time;
+public class TimeRecorded
+{
+    string playerName;
+    TimeSpan time;
 
-	public TimeRecorded(string playerName, TimeSpan time){
-		this.playerName = playerName;
-		this.time = time;
-	}
+    public TimeRecorded(string playerName, TimeSpan time)
+    {
+        this.playerName = playerName;
+        this.time = time;
+    }
 
-	public string getPlayerName(){
-		return playerName;
-	}
+    public string getPlayerName()
+    {
+        return playerName;
+    }
 
-	public TimeSpan getTime(){
-		return time;
-	}
+    public TimeSpan getTime()
+    {
+        return time;
+    }
 }

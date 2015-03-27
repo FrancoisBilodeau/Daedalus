@@ -18,7 +18,6 @@ public class MazesButtonBehavior : MonoBehaviour {
 	
 	// Loader le labyrinthe choisi
 	void OnMouseUp () {
-		PlayModeSingleton playMode = PlayModeSingleton.Instance;
 		string mazeName = ((TextMesh)(GetComponent("TextMesh"))).text.ToString();
 		SaveFile save = new SaveFile();
 		
@@ -30,6 +29,7 @@ public class MazesButtonBehavior : MonoBehaviour {
 			d = Display.InvalidTime;
 		}
 		else {
+			PlayModeSingleton playMode = PlayModeSingleton.Instance;
 			playMode.setSaveFile(save);
 			Application.LoadLevel(2);
 		}

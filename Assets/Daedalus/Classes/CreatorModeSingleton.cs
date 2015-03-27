@@ -1,53 +1,47 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿public class CreatorModeSingleton
+{
 
-public class CreatorModeSingleton {
+    const int WallHeight = 3; // Hauteur des murs du labyrinthe
+    const float TileSize = 2.0f; // Tailles d'une tuile du labyrinthe
+    Maze maze;
 
-	private int wallHeight = 3;
-	private float tileSize = 2.0f;
-	private Maze maze;
-
-	private static CreatorModeSingleton instance;
+    static CreatorModeSingleton instance;
 	
-	private CreatorModeSingleton(){
-		maze = new Maze();
-	}
+    CreatorModeSingleton()
+    {
+        maze = new Maze();
+    }
 	
-	public static CreatorModeSingleton Instance
-	{
-		get 
-		{
-			if (instance == null)
-			{
-				instance = new CreatorModeSingleton();
-			}
-			return instance;
-		}
-	}
+    public static CreatorModeSingleton Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new CreatorModeSingleton();
+            }
+            return instance;
+        }
+    }
 
-	//Pour pouvoir obtenir un objet de type labyrinthe
-	public Maze getMaze(){
-		return maze;
-	}
+    public Maze getMaze()
+    {
+        return maze;
+    }
 
-	//Pour pouvoir modifier et travailler avec un objet de type labyrinthe
-	public void setMaze(Maze maze){
-		this.maze = maze;
-	}
+    public void setMaze(Maze newMaze)
+    {
+        maze = newMaze;
+    }
 
-	//Pour get la hauteur des mur d'un labyrinthe
-	public int getWallHeight(){
-		return wallHeight;
-	}
-
-	//Pour set la hauteur d'un mur d'un labyrinthe
-	public void setWallHeight(int wallHeight){
-		this.wallHeight = wallHeight;
-	}
+    public int getWallHeight()
+    {
+        return WallHeight;
+    }
 	
-	//Pour get la taille d'une tuile d'un labyrinthe
-	public float getTileSize(){
-		return tileSize;
-	}
+    public float getTileSize()
+    {
+        return TileSize;
+    }
 		
 }

@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraAnimation : MonoBehaviour {
+public class CameraAnimation : MonoBehaviour
+{
 
-	//Animation créée à l'aide de l'Animation Tool de Unity 
-	public void playAnimation(){
-		GetComponent<Animation>().Play();
-	}
+    //Animation créée à l'aide de l'Animation Tool de Unity 
+    public void playAnimation()
+    {
+        GetComponent<Animation>().Play();
+    }
 
 }
