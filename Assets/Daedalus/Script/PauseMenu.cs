@@ -293,7 +293,7 @@ public class PauseMenu : MonoBehaviour
 			PlayModeSingleton playMode = PlayModeSingleton.Instance;
 			playMode.setStarted(false);
 			UnPauseGame();
-			Screen.showCursor = true;
+			Cursor.visible = true;
 			Application.LoadLevel("MainMenu");
 		}
 		EndPage();
@@ -323,7 +323,7 @@ public class PauseMenu : MonoBehaviour
 		Time.timeScale = 0;
 		cameraState = ((MonoBehaviour)(GameObject.Find("Main Camera").GetComponent("MouseLook"))).enabled;
 		((MonoBehaviour)(GameObject.Find("Main Camera").GetComponent("MouseLook"))).enabled = false;
-		Screen.showCursor = true;
+		Cursor.visible = true;
 		AudioListener.pause = true;
 		currentPage = Page.Main;
 	}
@@ -331,7 +331,7 @@ public class PauseMenu : MonoBehaviour
 	void UnPauseGame() {
 		Time.timeScale = savedTimeScale;
 		((MonoBehaviour)(GameObject.Find("Main Camera").GetComponent("MouseLook"))).enabled = cameraState;
-		Screen.showCursor = false;
+		Cursor.visible = false;
 		AudioListener.pause = false;
 
 		

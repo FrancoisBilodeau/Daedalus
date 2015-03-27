@@ -7,7 +7,7 @@ public class PlayCamera : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Screen.showCursor = false;
+		Cursor.visible = false;
 
 		//create vector and get main camera
 		Vector2 start = playMode.getSaveFile().getMaze().start;

@@ -46,11 +46,11 @@ public class TileMapMouse : MonoBehaviour {
 		MoveCamera ();
 			
 		//Mouse collider
-		Ray ray = Camera.mainCamera.ScreenPointToRay( Input.mousePosition );
+		Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 		RaycastHit hitInfo;
 
 		//Highlight
-		if( collider.Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
+		if( GetComponent<Collider>().Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
 			int x = Mathf.FloorToInt( hitInfo.point.x / creatorMode.getTileSize());
 			int z = Mathf.FloorToInt( hitInfo.point.z / creatorMode.getTileSize());
 
@@ -72,7 +72,7 @@ public class TileMapMouse : MonoBehaviour {
 
 		//Tant que le Click DROIT est enfoncé
 		if(Input.GetMouseButton(1)&& GUIUtility.hotControl == 0) {
-			if( collider.Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
+			if( GetComponent<Collider>().Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
 				int x = Mathf.FloorToInt( hitInfo.point.x / creatorMode.getTileSize() - 1);
 				int z = Mathf.FloorToInt( hitInfo.point.z / creatorMode.getTileSize() - 1);
 
@@ -90,7 +90,7 @@ public class TileMapMouse : MonoBehaviour {
 
 		//Tant que le Click GAUCHE est enfoncé
 		if(Input.GetMouseButton(0)&& GUIUtility.hotControl == 0) {
-			if( collider.Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
+			if( GetComponent<Collider>().Raycast( ray, out hitInfo, Mathf.Infinity ) ) {
 				int x = Mathf.FloorToInt( hitInfo.point.x / creatorMode.getTileSize() - 1);
 				int z = Mathf.FloorToInt( hitInfo.point.z / creatorMode.getTileSize() - 1);
 				//Vérif si c'est pas un mur de CONTOUR, du state et s'il n'y a pas de mur

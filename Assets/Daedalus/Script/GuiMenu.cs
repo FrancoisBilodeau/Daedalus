@@ -15,11 +15,11 @@ public class GuiMenu : MonoBehaviour {
 		if (isButtonVisible && GUI.Button (new Rect (Screen.width - 125,Screen.height - 50,125,50), "Return to menu")) {
 			cameraMenu = GameObject.Find("Camera");
 			// Inverser l'animation pour revenir au main menu
-			cameraMenu.animation["cameranim"].speed = -1;
-			cameraMenu.animation["cameranim"].time = cameraMenu.animation["cameranim"].length;
-			Debug.Log (cameraMenu.animation ["cameranim"].time);
+			cameraMenu.GetComponent<Animation>()["cameranim"].speed = -1;
+			cameraMenu.GetComponent<Animation>()["cameranim"].time = cameraMenu.GetComponent<Animation>()["cameranim"].length;
+			Debug.Log (cameraMenu.GetComponent<Animation>() ["cameranim"].time);
 			isButtonVisible = false;
-			cameraMenu.animation.Play();
+			cameraMenu.GetComponent<Animation>().Play();
 		}
 	}
 	

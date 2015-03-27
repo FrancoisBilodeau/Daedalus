@@ -58,7 +58,7 @@ public class TimerScript : MonoBehaviour {
 				playMode.setStarted(false);
 				Time.timeScale = 1;
 				((MonoBehaviour)(GameObject.Find("Main Camera").GetComponent("MouseLook"))).enabled = true;
-				Screen.showCursor = false;
+				Cursor.visible = false;
 				Application.LoadLevel("PlayMode");
 			}
 			if (GUILayout.Button ("Quit")) {
@@ -91,7 +91,7 @@ public class TimerScript : MonoBehaviour {
 			playMode.setStarted(false);
 			reachEnd = true;
 			Time.timeScale = 0;
-			Screen.showCursor = true;
+			Cursor.visible = true;
 			((MonoBehaviour)(GameObject.Find("Main Camera").GetComponent("MouseLook"))).enabled = false;
 		}
 	}
