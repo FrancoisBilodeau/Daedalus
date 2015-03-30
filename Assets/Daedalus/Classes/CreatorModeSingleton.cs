@@ -3,13 +3,12 @@
 
     const int wallHeight = 3; // Hauteur des murs du labyrinthe
     const float tileSize = 2.0f; // Taille d'une tuile du labyrinthe
-    Maze maze;
 
     static CreatorModeSingleton instance;
 	
     CreatorModeSingleton()
     {
-        maze = new Maze();
+        Maze = new Maze();
     }
 	
     public static CreatorModeSingleton Instance
