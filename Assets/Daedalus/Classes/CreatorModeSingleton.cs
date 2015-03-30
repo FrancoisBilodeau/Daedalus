@@ -1,8 +1,8 @@
 ﻿public class CreatorModeSingleton
 {
 
-    const int WallHeight = 3; // Hauteur des murs du labyrinthe
-    const float TileSize = 2.0f; // Tailles d'une tuile du labyrinthe
+    const int wallHeight = 3; // Hauteur des murs du labyrinthe
+    const float tileSize = 2.0f; // Taille d'une tuile du labyrinthe
     Maze maze;
 
     static CreatorModeSingleton instance;
@@ -24,24 +24,10 @@
         }
     }
 
-    public Maze getMaze()
-    {
-        return maze;
-    }
+    public Maze Maze { get; set; }
 
-    public void setMaze(Maze newMaze)
-    {
-        maze = newMaze;
-    }
-
-    public int getWallHeight()
-    {
-        return WallHeight;
-    }
+    public int WallHeight { get; set; }
 	
-    public float getTileSize()
-    {
-        return TileSize;
-    }
+    public float TileSize { get; set; }
 		
 }

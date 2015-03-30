@@ -1,21 +1,23 @@
-﻿using UnityEngine;
-using System.Collections;
+using UnityEngine;
 
-public class PreviousButtonBehavior : MonoBehaviour {
+public class PreviousButtonBehavior : MonoBehaviour
+{
 
-	PageSingleton page = PageSingleton.Instance;
+    PageSingleton page = PageSingleton.Instance;
 	
-	void OnMouseEnter () {
-		GetComponent<Renderer>().material.color = Color.cyan;
-	}
+    void OnMouseEnter()
+    {
+        GetComponent<Renderer>().material.color = Color.cyan;
+    }
 	
-	void OnMouseExit () {
-		GetComponent<Renderer>().material.color = Color.white;
-	}
+    void OnMouseExit()
+    {
+        GetComponent<Renderer>().material.color = Color.white;
+    }
 	
-	void OnMouseUp () {
-		page.showPreviousPage();
-
-	}
+    void OnMouseUp()
+    {
+        page.ShowPreviousPage();
+    }
 	
 }

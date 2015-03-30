@@ -1,33 +1,33 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.IO;
-using System.Linq;
 
-public class PlayButtonBehavior : MonoBehaviour {
+public class PlayButtonBehavior : MonoBehaviour
+{
 	
-	GameObject cameraMenu;
+    GameObject cameraMenu;
 	
-	void OnMouseEnter () {
-		GetComponent<Renderer>().material.color = Color.cyan;
-	}
+    void OnMouseEnter()
+    {
+        GetComponent<Renderer>().material.color = Color.cyan;
+    }
 	
-	void OnMouseExit () {
-		GetComponent<Renderer>().material.color = Color.white;
-	}
+    void OnMouseExit()
+    {
+        GetComponent<Renderer>().material.color = Color.white;
+    }
 	
-	void OnMouseUp () {
-		cameraMenu = GameObject.Find("Camera");
-		cameraMenu.GetComponent<Animation>()["cameranim"].speed = 1;
-		cameraMenu.GetComponent<Animation>().Play("cameranim");
-		Invoke("reset", 2.45f);
-		PageSingleton.Instance.refresh();
-		PageSingleton.Instance.showPage();
+    void OnMouseUp()
+    {
+        cameraMenu = GameObject.Find("Camera");
+        cameraMenu.GetComponent<Animation>() ["cameranim"].speed = 1;
+        cameraMenu.GetComponent<Animation>().Play("cameranim");
+        Invoke("reset", 2.45f);
+        PageSingleton.Instance.Refresh();
+        PageSingleton.Instance.ShowPage();
+    }
+	
+    void Reset()
+    {
+        ((GuiMenu)(GameObject.Find("Plane").GetComponent("GuiMenu"))).IsButtonVisible = true;
+    }
 
-	}
-	
-	void reset(){
-		((GuiMenu)(GameObject.Find ("Plane").GetComponent ("GuiMenu"))).setButtonVisible (true);
-	}
-	
-	
 }

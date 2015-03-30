@@ -12,13 +12,13 @@ public enum SaveFileResult
     TimeInvalid
 }
 
- 
+
 public class SaveFile
 {
-
+    
     Maze maze;
     TimeRecorded[] times;
-
+    
     public SaveFile(Maze maze)
     {
         this.maze = maze;
@@ -28,46 +28,52 @@ public class SaveFile
             times [i] = new TimeRecorded("", new TimeSpan(0));
         }
     }
-
+    
+    public Maze Maze { get; set; }
+    
     public SaveFile()
     {
         maze = new Maze();
         times = new TimeRecorded[10];
     }
-  
-    public SaveFileResult writeMaze()
+    
+    public SaveFileResult WriteMaze()
     {
-        return writeMaze(false);
+        return WriteMaze(false);
     }
-
-    // Retourne l'état de l'écriture
-    public SaveFileResult writeMaze(bool overwrite)
+    
+    public TimeRecorded getTimeRecorded(int i)
     {
-		
+        return times [i];
+    }
+    
+    // Retourne l'état de l'écriture
+    public SaveFileResult WriteMaze(bool overwrite)
+    {
+        
         if (maze.mazeName.LastIndexOfAny(Path.GetInvalidFileNameChars()) != -1)
         {
             return SaveFileResult.InvalidName;
-            ;
         }
-
+        
         if (!overwrite && File.Exists("./mazes/" + maze.mazeName + ".maze"))
         {
             return SaveFileResult.TakenName;
         }
-		
+        
         if (string.IsNullOrEmpty(maze.mazeName))
         {
             return SaveFileResult.EmptyName;
         }
-
-        using (StreamWriter writer = new StreamWriter("./mazes/" + maze.mazeName + ".maze"))
+        
+        using (var writer = new StreamWriter("./mazes/" + maze.mazeName + ".maze"))
         {
             // Taille de format 000x000
             writer.WriteLine(maze.sizeX.ToString("D3") + "x" + maze.sizeZ.ToString("D3"));
-			
+            
             // Coordonnées du départ puis coordonnées d'arrivée de format (000,000)(000,000)
-            writer.WriteLine(maze.start.ToString() + maze.end.ToString());
-			
+            writer.WriteLine(maze.start + maze.end);
+            
             // Remplissage du mapData
             // Chaque ligne du fichier représente une "ligne" du labyrinthe
             for (int i = 0; i < maze.sizeX; i++)
@@ -89,33 +95,33 @@ public class SaveFile
                     }
                 }
             }
-
+            
             for (int i = 0; i < 10; i++)
             {
-                writer.Write(times [i].getPlayerName());
+                writer.Write(times [i].PlayerName);
                 writer.Write(":");
-                writer.Write(times [i].getTime().Ticks);
+                writer.Write(times [i].Time.Ticks);
                 writer.Write("\n");
             }
         }
         return SaveFileResult.Ok;
     }
-	
-    public SaveFileResult loadFile(string selectedMaze)
+    
+    public SaveFileResult LoadFile(string selectedMaze)
     {
         maze = new Maze();
         maze.mazeName = selectedMaze;
-
-        using (StreamReader reader = new StreamReader("./mazes/" + selectedMaze + ".maze"))
+        
+        using (var reader = new StreamReader("./mazes/" + selectedMaze + ".maze"))
         {
-
+            
             // Taille en x
             string wSizeX = "";
             for (int i=0; i < 3; i++)
             {
                 wSizeX += reader.Read();
             }
-
+            
             if (!uint.TryParse(wSizeX, out maze.sizeX))
             {
                 return SaveFileResult.MazeInvalid;
@@ -124,13 +130,13 @@ public class SaveFile
             {
                 return SaveFileResult.MazeInvalid;
             }
-
+            
             // Échapper le 'x'
             if (reader.Read() != 'x')
             {
                 return SaveFileResult.MazeInvalid;
             }
-			
+            
             // Taille en z
             string wSizeZ = "";
             for (int i=0; i < 3; i++)
@@ -145,13 +151,13 @@ public class SaveFile
             {
                 return SaveFileResult.MazeInvalid;
             }
-
+            
             // Échapper le \n
             if (reader.ReadLine() != "")
             {
                 return SaveFileResult.MazeInvalid;
             }
-			
+            
             // Échapper le '('
             if (reader.Read() != '(')
             {
@@ -166,13 +172,13 @@ public class SaveFile
             {
                 return SaveFileResult.MazeInvalid;
             }
-			
+            
             // Échapper le ','
             if (reader.Read() != ',')
             {
                 return SaveFileResult.MazeInvalid;
             }
-			
+            
             string wStartZ = "";
             while (reader.Peek() != ')')
             { 
@@ -182,22 +188,22 @@ public class SaveFile
             {
                 return SaveFileResult.MazeInvalid;
             }
-			
+            
             // Échapper le ')'
             if (reader.Read() != ')')
             {
                 return SaveFileResult.MazeInvalid;
             }
-			
+            
             // Coordonnées de la tuile de départ
             maze.start = new Vector2(float.Parse(wStartX), float.Parse(wStartZ));
-			
+            
             // Échapper le '('
             if (reader.Read() != '(')
             {
                 return SaveFileResult.MazeInvalid;
             }
-			
+            
             string wEndX = "";
             while (reader.Peek() != ',')
             {
@@ -212,7 +218,7 @@ public class SaveFile
             {
                 return SaveFileResult.MazeInvalid;
             }
-			
+            
             string wEndZ = "";
             while (reader.Peek() != ')')
             {
@@ -222,23 +228,23 @@ public class SaveFile
             {
                 return SaveFileResult.MazeInvalid;
             }
-
+            
             // Échapper le ')' puis changer de ligne
             if (reader.ReadLine() != ")")
             {
                 return SaveFileResult.MazeInvalid;
             }
-
+            
             //Coordonnées de la tuile de fin
             maze.end = new Vector2(float.Parse(wEndX), float.Parse(wEndZ));
-
+            
             if (maze.start == maze.end)
             {
                 return SaveFileResult.MazeInvalid;
             }
-	
-            bool[,] mazeData = new bool[maze.sizeX, maze.sizeZ];
-
+            
+            var mazeData = new bool[maze.sizeX, maze.sizeZ];
+            
             // Lecture du mapData
             for (int i=0; i < maze.sizeX; i++)
             {
@@ -249,8 +255,7 @@ public class SaveFile
                         reader.Read();
                         mazeData [i, j] = true;
                     }
-                    else
-                    if (reader.Peek() == '0')
+                    else if (reader.Peek() == '0')
                     {
                         reader.Read();
                         mazeData [i, j] = false;
@@ -259,6 +264,7 @@ public class SaveFile
                     {
                         return SaveFileResult.MazeInvalid;
                     }
+
                     if (j == maze.sizeX - 1)
                     {
                         if (reader.ReadLine() != "")
@@ -269,17 +275,17 @@ public class SaveFile
                 }
             }
             maze.mapData = mazeData;
-
+            
             // La liste des temps
             for (int i = 0; i<10; i++)
             {
                 string nameTemp = "";
                 long timeTemp;
-
+                
                 // Nom
                 while (reader.Peek() != ':')
                 {
-                    nameTemp += (char)reader.Read();
+                    nameTemp += reader.Read();
                 }
                 // Échapper le ':'
                 if (reader.Read() != ':')
@@ -291,52 +297,42 @@ public class SaveFile
                 {
                     return SaveFileResult.TimeInvalid;
                 }
-
+                
                 // Ajout au tableau
                 times [i] = new TimeRecorded(nameTemp, new TimeSpan(timeTemp));
             }
         }
-		
+        
         return SaveFileResult.Ok;
     }
-
+    
     // Ajoute le temps dans le tableau des meilleurs temps
-    public void addBestTime(TimeRecorded time)
+    public void AddBestTime(TimeRecorded time)
     {
         TimeRecorded timeTemp = time;
         for (int i = 0; i < 10; i++)
         {
-            if (timeTemp.getTime() < times [i].getTime() || times [i].getTime().Ticks == 0)
+            if (timeTemp.Time < times [i].Time || times [i].Time.Ticks == 0)
             {
                 TimeRecorded temp = timeTemp;
                 timeTemp = times [i];
                 times [i] = temp;
             }
         }
-        writeMaze();
+        WriteMaze();
     }
-
+    
     // Teste si le temps fait partie des meilleurs temps
-    public bool isInBestTime(TimeSpan time)
+    public bool IsInBestTime(TimeSpan time)
     {
         for (int i = 0; i < 10; i++)
         {
-            if (time < times [i].getTime() || times [i].getTime().Ticks == 0)
+            if (time < times [i].Time || times [i].Time.Ticks == 0)
             {
                 return true;
             }
         }
         return false;
     }
-
-    public Maze getMaze()
-    {
-        return maze;
-    }
-
-    public TimeRecorded getTimeRecorded(int i)
-    {
-        return times [i];
-    }
-
+    
 }

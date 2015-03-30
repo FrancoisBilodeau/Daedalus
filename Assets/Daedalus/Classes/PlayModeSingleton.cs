@@ -1,17 +1,12 @@
 ﻿public class PlayModeSingleton
 {
 
-    const int WallHeight = 3; // Hauteur des murs du labyrinthe
-    const float TileSize = 2.0f; // Tailles d'une tuile du labyrinthe
-
     static PlayModeSingleton instance;
-    SaveFile saveFile;
-    bool started;
 
     PlayModeSingleton()
     {
-        started = new bool();
-        started = false;
+        Started = new bool();
+        Started = false;
     }
 
     public static PlayModeSingleton Instance
@@ -26,28 +21,11 @@
         }
     }
 	
-    public SaveFile getSaveFile()
-    {
-        return saveFile;
-    }
+    public SaveFile SaveFile { get; set; }
 
-    public void setSaveFile(SaveFile newSaveFile)
-    {
-        saveFile = newSaveFile;
-    }
+    public bool Started { get; set; }
 
-    public bool hasStarted()
-    {
-        return started;
-    }
+    public float TileSize { get; set; }
 
-    public void setStarted(bool isStarted)
-    {
-        started = isStarted;
-    }
-
-    public float getTileSize()
-    {
-        return TileSize;
-    }
+    public int WallHeight { get; set; }
 }

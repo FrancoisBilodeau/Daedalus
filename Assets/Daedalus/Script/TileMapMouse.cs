@@ -1,13 +1,13 @@
 using UnityEngine;
-using System.Collections;
 
 public enum CursorState
 {
     draw,
     start,
     end,
-    none}
-;
+    none
+}
+
 public enum ErrorType
 {
     Start,
@@ -16,37 +16,34 @@ public enum ErrorType
     NameTaken,
     NameWrong,
     NameEmpty,
-    None}
-;
+    None
+}
 
 [RequireComponent(typeof(TileMapCreator))]
 public class TileMapMouse : MonoBehaviour
 {
 
-	
-    CreatorModeSingleton creatorMode = CreatorModeSingleton.Instance;
-    private CursorState state = CursorState.draw;
-    public GUISkin skin = null;
-    TileMapCreator tileMap;
+    static CreatorModeSingleton creatorMode = CreatorModeSingleton.Instance;
+    static CursorState state = CursorState.draw;
+    GUISkin skin = null;
+    static TileMapCreator tileMap;
 
-    Vector3 currentTileCoord;
+    static Vector3 currentTileCoord;
 
     //bool pour ouvrir les GUI.Window	
-    private bool savePopup = false;
-    private bool helpPopup = false;
-    private bool quitPopup = false;
-    private bool confirm = false;
-    private string name;
-    private ErrorType err = ErrorType.None;
-    public Transform selectionCube;
+    static bool savePopup;
+    static bool helpPopup;
+    static bool quitPopup;
+    static bool confirm;
+    static ErrorType err = ErrorType.None;
+    Transform selectionCube = null;
 
-    //nom du labyrinthe
-    private string nom = "";
+    static string nom = "";
 	
     void Start()
     {
         tileMap = GetComponent<TileMapCreator>();
-        Maze maze = creatorMode.getMaze();
+        Maze maze = creatorMode.Maze;
         maze.start = new Vector2(-1, -1);
         maze.end = new Vector2(-1, -1);
     }
@@ -54,8 +51,7 @@ public class TileMapMouse : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        Maze maze = creatorMode.getMaze();
+        Maze maze = creatorMode.Maze;
 
         //Camera Zoom
         Zooming();
@@ -70,44 +66,48 @@ public class TileMapMouse : MonoBehaviour
         //Highlight
         if (GetComponent<Collider>().Raycast(ray, out hitInfo, Mathf.Infinity))
         {
-            int x = Mathf.FloorToInt(hitInfo.point.x / creatorMode.getTileSize());
-            int z = Mathf.FloorToInt(hitInfo.point.z / creatorMode.getTileSize());
+            int x = Mathf.FloorToInt(hitInfo.point.x / creatorMode.TileSize);
+            int z = Mathf.FloorToInt(hitInfo.point.z / creatorMode.TileSize);
 
-            Vector3 currentTileCoord;
-            currentTileCoord.x = x + 0.5f;
-            currentTileCoord.y = 1f;
-            currentTileCoord.z = z + 0.5f;
-            selectionCube.position = currentTileCoord * creatorMode.getTileSize();
+            Vector3 currentTile;
+            currentTile.x = x + 0.5f;
+            currentTile.y = 1f;
+            currentTile.z = z + 0.5f;
+            selectionCube.position = currentTile * creatorMode.TileSize;
         }
         else
         {
-            //Cacher le highligh.
-            Vector3 currentTileCoord;
-            currentTileCoord.x = 10f;
-            currentTileCoord.y = -1f;
-            currentTileCoord.z = 10f;
-            selectionCube.position = currentTileCoord * creatorMode.getTileSize();
+            //Cacher le highlight.
+            Vector3 currentTile;
+            currentTile.x = 10f;
+            currentTile.y = -1f;
+            currentTile.z = 10f;
+            selectionCube.position = currentTile * creatorMode.TileSize;
         }
-
-
 
         //Tant que le Click DROIT est enfoncé
         if (Input.GetMouseButton(1) && GUIUtility.hotControl == 0)
         {
             if (GetComponent<Collider>().Raycast(ray, out hitInfo, Mathf.Infinity))
             {
-                int x = Mathf.FloorToInt(hitInfo.point.x / creatorMode.getTileSize() - 1);
-                int z = Mathf.FloorToInt(hitInfo.point.z / creatorMode.getTileSize() - 1);
+                int x = Mathf.FloorToInt(hitInfo.point.x / creatorMode.TileSize - 1);
+                int z = Mathf.FloorToInt(hitInfo.point.z / creatorMode.TileSize - 1);
 
-                //Vérif si c'est pas un mur de CONTOUR, du state et si'l y a déja un mur
+                //Vérif de l'état, si c'est pas un mur de CONTOUR, et s'il y a déja un mur
                 if (((x > -1 && z > -1) && (x < (maze.sizeX) && z < (maze.sizeZ))) && state == CursorState.draw && !maze.mapData [z, x])
-                    AddTile(x, z, maze);				
-                //Vérif si c'est pas un mur de CONTOUR et du state
+                {
+                    AddWall(x, z, maze);
+                }
+                //Vérif de l'état et si c'est pas un mur de CONTOUR
                 if (((x > -1 && z > -1) && (x < (maze.sizeX) && z < (maze.sizeZ))) && state == CursorState.start)
+                {
                     PutStart(x, z, maze);
-                //Vérif si c'est pas un mur de CONTOUR et du state
+                }
+                //Vérif de l'état et si c'est pas un mur de CONTOUR
                 if (((x > -1 && z > -1) && (x < (maze.sizeX) && z < (maze.sizeZ))) && state == CursorState.end)
-                    PutEnd(x, z, maze);
+                {
+                    PlaceEnd(x, z, maze);
+                }
             }
         }
 
@@ -116,26 +116,25 @@ public class TileMapMouse : MonoBehaviour
         {
             if (GetComponent<Collider>().Raycast(ray, out hitInfo, Mathf.Infinity))
             {
-                int x = Mathf.FloorToInt(hitInfo.point.x / creatorMode.getTileSize() - 1);
-                int z = Mathf.FloorToInt(hitInfo.point.z / creatorMode.getTileSize() - 1);
+                int x = Mathf.FloorToInt(hitInfo.point.x / creatorMode.TileSize - 1);
+                int z = Mathf.FloorToInt(hitInfo.point.z / creatorMode.TileSize - 1);
                 //Vérif si c'est pas un mur de CONTOUR, du state et s'il n'y a pas de mur
                 if (((x > -1 && z > -1) && (x < (maze.sizeX) && z < (maze.sizeZ))) && state == CursorState.draw && maze.mapData [z, x])
-                    RemoveTile(x, z, maze);
+                    RemoveWall(x, z, maze);
                 //Vérif si c'est pas un mur de CONTOUR et du state
                 if (((x > -1 && z > -1) && (x < (maze.sizeX) && z < (maze.sizeZ))) && state == CursorState.start)
                     PutStart(x, z, maze);
                 //Vérif si c'est pas un mur de CONTOUR et du state
                 if (((x > -1 && z > -1) && (x < (maze.sizeX) && z < (maze.sizeZ))) && state == CursorState.end)
-                    PutEnd(x, z, maze);
+                    PlaceEnd(x, z, maze);
             }
         }
     }
 
     void OnGUI()
     {
-		
         GUI.skin = skin;
-        Maze maze = creatorMode.getMaze();
+        Maze maze = creatorMode.Maze;
 
         //Bouton qui ouvre la fenetre Quit
         if (GUI.Button(new Rect(Screen.width - 100, Screen.height - 50, 100, 50), "Return"))
@@ -155,7 +154,7 @@ public class TileMapMouse : MonoBehaviour
         if (GUI.Button(new Rect(Screen.width - 100, Screen.height - 150, 100, 50), "Clear"))
         {
             if (state != CursorState.none)
-                ViderGrille(maze);
+                Empty(maze);
         }
 
         //Bouton qui change le state a END pour pouvoir ajouter la case END
@@ -218,13 +217,12 @@ public class TileMapMouse : MonoBehaviour
         {
             maze.mazeName = name;
             SaveFile save = new SaveFile(maze);
-            save.writeMaze(true);
+            save.WriteMaze(true);
             Application.LoadLevel(0);
         }
     }
 
-    //Methode pour zoom in and out
-    private void Zooming()
+    static void Zooming()
     {
         float minFov = 10f;
         float maxFov = 70f;
@@ -236,32 +234,24 @@ public class TileMapMouse : MonoBehaviour
         Camera.main.fieldOfView = fov;
     }
 	
-    //Methode pour ajouter un mur
-    private void AddTile(int x, int z, Maze maze)
+    void AddWall(int x, int z, Maze maze)
     {
-		
         currentTileCoord.x = x;
         currentTileCoord.z = z;
         maze.mapData [z, x] = true;
         tileMap.BuildMesh();
-		
     }
 	
-    //Methode pour enlever un mur
-    private void RemoveTile(int x, int z, Maze maze)
+    static void RemoveWall(int x, int z, Maze maze)
     {
-		
         currentTileCoord.x = x;
         currentTileCoord.z = z;
         maze.mapData [z, x] = false;
         tileMap.BuildMesh();
-		
     }
 	
-    //Methode pour ajouter la case start
-    private void PutStart(int x, int z, Maze maze)
+    static void PutStart(int x, int z, Maze maze)
     {
-		
         currentTileCoord.x = x;
         currentTileCoord.z = z;
         maze.start = new Vector2(z, x);
@@ -271,22 +261,19 @@ public class TileMapMouse : MonoBehaviour
 		
     }
 	
-    //Methode pour ajouter la case end
-    private void PutEnd(int x, int z, Maze maze)
+    static void PlaceEnd(int x, int z, Maze maze)
     {
-		
         currentTileCoord.x = x;
         currentTileCoord.z = z;
         maze.end = new Vector2(z, x);
         maze.mapData [z, x] = false;
         state = CursorState.draw;
         tileMap.BuildMesh();
-		
     }
-    //Methode qui vide la grille
-    private void ViderGrille(Maze maze)
-    {
 
+    // Enlève tous les murs
+    static void Empty(Maze maze)
+    {
         for (int i = 0; i < 64; i++)
         {
             for (int k = 0; k < 64; k++)
@@ -301,7 +288,7 @@ public class TileMapMouse : MonoBehaviour
     }
 
     //Methode qui inverse la grille
-    private void InvertGrille(Maze maze)
+    static void InvertGrille(Maze maze)
     {
 		
         for (int i = 0; i < 64; i++)
@@ -326,50 +313,46 @@ public class TileMapMouse : MonoBehaviour
     }
 
     //Contenu de la fenetre Save & Quit
-    private void DoMyWindow(int windowID)
+    static void DoMyWindow(int windowID)
     {
 
-        Maze maze = creatorMode.getMaze();
+        Maze maze = creatorMode.Maze;
         Verification verif = new Verification(maze);
 
         GUI.Label(new Rect(10, 20, 500, 300), "  Please enter a name for this maze\n                  Maximum Size: 16");
         nom = GUI.TextField(new Rect(90, 60, 150, 20), nom, 16);
         if (GUI.Button(new Rect(90, 90, 150, 20), "Save"))
         {
-            if (verif.verification(maze) == Verification.VerificationResult.Ok)
+            if (verif.VerifyMaze(maze) == Verification.VerificationResult.Ok)
             {
                 maze.mazeName = nom;
                 SaveFile save = new SaveFile(maze);
-                SaveFileResult result = save.writeMaze();
+                SaveFileResult result = save.WriteMaze();
                 if (result == SaveFileResult.InvalidName)
                 {
                     err = ErrorType.NameWrong;
                 }
-                else
-                if (result == SaveFileResult.TakenName)
+                else if (result == SaveFileResult.TakenName)
                 {
                     err = ErrorType.NameTaken;
-                    name = nom;
+                    Object obj = new Object();
+                    obj.name = nom;
                 }
-                else
-                if (result == SaveFileResult.EmptyName)
+                else if (result == SaveFileResult.EmptyName)
                 {
                     err = ErrorType.NameEmpty;
                 }
                 else
                 {
-                    save.writeMaze();
+                    save.WriteMaze();
                     Application.LoadLevel(0);
                 }
-
             }
-            else
-            if (verif.verification(maze) == Verification.VerificationResult.InvalidStart)
+            else if (verif.VerifyMaze(maze) == Verification.VerificationResult.InvalidStart)
             {
                 err = ErrorType.Start;
             }
-            else
-            if (verif.verification(maze) == Verification.VerificationResult.InvalidEnd)
+            else if (verif.VerifyMaze(maze) == Verification.VerificationResult.InvalidEnd)
             {
                 err = ErrorType.End;
             }
@@ -381,8 +364,8 @@ public class TileMapMouse : MonoBehaviour
         }			
     }
 
-    //Contenu de la fenetre ERROR
-    private void DoMyWindowErr(int windowID)
+    // Contenu de la fenetre ERROR
+    static void DoMyWindowErr(int windowID)
     {
         if (err == ErrorType.Start)
         {
@@ -393,8 +376,7 @@ public class TileMapMouse : MonoBehaviour
                 state = CursorState.draw;
             }
         }
-        else
-        if (err == ErrorType.End)
+        else if (err == ErrorType.End)
         {
             GUI.Label(new Rect(45, 20, 500, 300), "Error: Invalid ending tile");
             if (GUI.Button(new Rect(80, 90, 150, 20), "OK"))
@@ -403,8 +385,7 @@ public class TileMapMouse : MonoBehaviour
                 state = CursorState.draw;
             }
         }
-        else
-        if (err == ErrorType.Inc)
+        else if (err == ErrorType.Inc)
         {
             GUI.Label(new Rect(45, 20, 500, 300), "Error: Maze cannot be completed");
             if (GUI.Button(new Rect(80, 90, 150, 20), "OK"))
@@ -413,8 +394,7 @@ public class TileMapMouse : MonoBehaviour
                 state = CursorState.draw;
             }
         }
-        else
-        if (err == ErrorType.NameWrong)
+        else if (err == ErrorType.NameWrong)
         {
             GUI.Label(new Rect(45, 20, 500, 300), "Error: Invalid name");
             if (GUI.Button(new Rect(80, 90, 150, 20), "OK"))
@@ -423,8 +403,7 @@ public class TileMapMouse : MonoBehaviour
                 state = CursorState.draw;
             }
         }
-        else
-        if (err == ErrorType.NameTaken)
+        else if (err == ErrorType.NameTaken)
         {
             GUI.Label(new Rect(45, 20, 600, 300), "Error: Name already taken\n\n             Overwrite?");
             if (GUI.Button(new Rect(60, 90, 100, 20), "YES"))
@@ -432,15 +411,13 @@ public class TileMapMouse : MonoBehaviour
                 confirm = true;
                 err = ErrorType.None;
             }
-            else
-            if (GUI.Button(new Rect(170, 90, 100, 20), "NO"))
+            else if (GUI.Button(new Rect(170, 90, 100, 20), "NO"))
             {
                 err = ErrorType.None;
                 state = CursorState.draw;
             }
         }
-        else
-        if (err == ErrorType.NameEmpty)
+        else if (err == ErrorType.NameEmpty)
         {
             GUI.Label(new Rect(45, 20, 500, 300), "Error: Name space is empty");
             if (GUI.Button(new Rect(80, 90, 150, 20), "OK"))
@@ -452,7 +429,7 @@ public class TileMapMouse : MonoBehaviour
     }
 	
     //Contenu de la fenetre HELP
-    private void DoMyWindowHelp(int windowID)
+    static void DoMyWindowHelp(int windowID)
     {
         GUI.Label(new Rect(45, 20, 500, 300), "\nClick to create pathways\n\nRight-click to create walls\n\n" +
             "Mousewheel to zoom in/out\n\nMove camera with WASD\n or arrow keys\n\n" +
@@ -466,7 +443,7 @@ public class TileMapMouse : MonoBehaviour
     }
 
     //Contenu de la fenetre Return
-    private void DoMyWindowQuit(int windowID)
+    static void DoMyWindowQuit(int windowID)
     {
         GUI.Label(new Rect(45, 20, 500, 300), "\nAre you sure you want to\nreturn to main menu?\n\nYour maze will not be saved.");
 
@@ -483,7 +460,7 @@ public class TileMapMouse : MonoBehaviour
     }
 
     //Fonction pour bouger la camera avec wasd ou les fleches et établir les limites
-    private void MoveCamera()
+    static void MoveCamera()
     {
         float xAxisValue = Input.GetAxisRaw("Horizontal");
         float zAxisValue = Input.GetAxisRaw("Vertical");

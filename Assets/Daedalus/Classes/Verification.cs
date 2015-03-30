@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Verification
 {
@@ -19,9 +18,9 @@ public class Verification
         this.maze = maze;
     }
 	
-    public VerificationResult verification(Maze mazeToCheck)
+    public VerificationResult VerifyMaze(Maze mazeToCheck)
     {
-        bool[,] mazeData = (bool[,])mazeToCheck.mapData.Clone();
+        var mazeData = (bool[,])mazeToCheck.mapData.Clone();
 
         if (mazeToCheck.start.x < 0 || mazeToCheck.start.y < 0)
         {
@@ -31,7 +30,6 @@ public class Verification
         {
             return VerificationResult.InvalidStart;
         }
-
         if (mazeToCheck.end.x < 0 || mazeToCheck.end.y < 0)
         {
             return VerificationResult.InvalidEnd;
@@ -40,7 +38,7 @@ public class Verification
         {
             return VerificationResult.InvalidEnd;
         }
-        if (travel(mazeData, mazeToCheck.start))
+        if (Travel(mazeData, mazeToCheck.start))
         {
             return VerificationResult.Ok;
         }
@@ -48,7 +46,8 @@ public class Verification
     }
 
     // Fonction récursive appelée pour chaque case
-    bool travel(bool[,] mazeData, Vector2 coor)
+    // Algorithme de Dijkstra
+    bool Travel(bool[,] mazeData, Vector2 coor)
     {
         if (coor.Equals(maze.end))
         {
@@ -58,28 +57,28 @@ public class Verification
         mazeData [(int)coor.x, (int)coor.y] = true;
         if (coor.x > 0 && !mazeData [(int)coor.x - 1, (int)coor.y])
         {
-            if (travel(mazeData, new Vector2((int)coor.x - 1, (int)coor.y)))
+            if (Travel(mazeData, new Vector2((int)coor.x - 1, coor.y)))
             {
                 return true;
             }
         }
         if (coor.x < maze.sizeX - 1 && !mazeData [(int)coor.x + 1, (int)coor.y])
         {
-            if (travel(mazeData, new Vector2((int)coor.x + 1, (int)coor.y)))
+            if (Travel(mazeData, new Vector2((int)coor.x + 1, coor.y)))
             {
                 return true;
             }
         }
         if (coor.y > 0 && !mazeData [(int)coor.x, (int)coor.y - 1])
         {
-            if (travel(mazeData, new Vector2((int)coor.x, (int)coor.y - 1)))
+            if (Travel(mazeData, new Vector2(coor.x, (int)coor.y - 1)))
             {
                 return true;
             }
         }
         if (coor.y < maze.sizeZ - 1 && !mazeData [(int)coor.x, (int)coor.y + 1])
         {
-            if (travel(mazeData, new Vector2((int)coor.x, (int)coor.y + 1)))
+            if (Travel(mazeData, new Vector2(coor.x, (int)coor.y + 1)))
             {
                 return true;
             }

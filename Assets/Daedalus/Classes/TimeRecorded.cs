@@ -1,25 +1,15 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
+﻿using System;
 
 public class TimeRecorded
 {
-    string playerName;
-    TimeSpan time;
 
     public TimeRecorded(string playerName, TimeSpan time)
     {
-        this.playerName = playerName;
-        this.time = time;
+        this.PlayerName = playerName;
+        this.Time = time;
     }
 
-    public string getPlayerName()
-    {
-        return playerName;
-    }
+    public TimeSpan Time { get; set; }
 
-    public TimeSpan getTime()
-    {
-        return time;
-    }
+    public string PlayerName { get; set; }
 }
